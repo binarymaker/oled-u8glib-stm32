@@ -41,7 +41,7 @@
 #include "stm32f1xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "u8g_arm.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -49,7 +49,7 @@ I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+static u8g_t u8g;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,7 +63,15 @@ static void MX_I2C1_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+/*  
+Function which responds for drawing  
+*/  
+void draw(void)  
+{  
+     u8g_SetFont(&u8g,u8g_font_profont10);//set current font  
+     u8g_DrawStr(&u8g, 2, 12, "Hello!");//write string - you set coordinates and string  
+     u8g_DrawBox(&u8g, 30, 30, 35, 35);//draw some box  
+}  
 /* USER CODE END 0 */
 
 /**
@@ -97,14 +105,24 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  /* init u8glib driver */
+  u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn); 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+  //this loop correspond of drawing  
+  u8g_FirstPage(&u8g);  
+  
+    do
+    {
+      draw();  
+    } while ( u8g_NextPage(&u8g) );  
+  
+  u8g_Delay(10);  
+  
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
